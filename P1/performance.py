@@ -1,6 +1,7 @@
 import time
 from algoritmos_busqueda import bfs, dfs, a_star, greedy
-from heuristicas import manhattan, euclidean
+from heuristicas import distancia_manhattan, distancia_euclidea
+
 
 def medir_tiempo(algoritmo, maze, heuristic=None):
     inicio = time.time()

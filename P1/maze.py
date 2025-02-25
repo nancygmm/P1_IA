@@ -1,20 +1,17 @@
 class Maze:
-    def __init__(self, file_path):
-        self.grid = []
+    def __init__(self, laberinto_data):
+        self.grid = laberinto_data
         self.start = None
         self.goal = None
-        self.load_maze(file_path)
+        self.find_start_and_goal()
 
-    def load_maze(self, file_path):
-        with open(file_path, 'r') as file:
-            for y, line in enumerate(file):
-                row = list(line.strip())
-                self.grid.append(row)
-                for x, cell in enumerate(row):
-                    if cell == 'I':  
-                        self.start = (x, y)
-                    elif cell == 'G': 
-                        self.goal = (x, y)
+    def find_start_and_goal(self):
+        for y, row in enumerate(self.grid):
+            for x, cell in enumerate(row):
+                if cell == 'I':  
+                    self.start = (x, y)
+                elif cell == 'G': 
+                    self.goal = (x, y)
 
     def get_neighbors(self, position):
         x, y = position
