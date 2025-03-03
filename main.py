@@ -1,5 +1,6 @@
 import time
 import heapq
+import random
 from queue import Queue, LifoQueue
 import numpy as np
 
@@ -14,7 +15,7 @@ def encontrar_posiciones(laberinto, valor):
 def movimientos_validos(laberinto, pos):
     filas, columnas = laberinto.shape
     x, y = pos
-    movimientos = [(x-1, y), (x, y+1), (x+1, y), (x, y-1)]  
+    movimientos = [(x-1, y), (x, y+1), (x+1, y), (x, y-1)]
     return [(nx, ny) for nx, ny in movimientos if 0 <= nx < filas and 0 <= ny < columnas and laberinto[nx, ny] != '1']
 
 def bfs(laberinto, inicio, meta):
@@ -96,6 +97,10 @@ def heuristica_manhattan(a, b):
 def heuristica_euclidiana(a, b):
     return ((a[0] - b[0])**2 + (a[1] - b[1])**2)**0.5
 
+def elegir_punto_aleatorio(laberinto):
+    caminos = encontrar_posiciones(laberinto, '0')
+    return random.choice(caminos) if caminos else None
+
 def ejecutar_algoritmos(laberinto, inicio, meta):
     resultados = {}
     for nombre, funcion in [('BFS', bfs), ('DFS', dfs)]:
@@ -115,10 +120,22 @@ def ejecutar_algoritmos(laberinto, inicio, meta):
         resultados[nombre] = (camino, explorados, tiempo)
     return resultados
 
-if __name__ == "__main__":
-    laberinto = cargar_laberinto("Laberinto1.txt")
-    inicio = encontrar_posiciones(laberinto, '2')[0]
-    meta = encontrar_posiciones(laberinto, '3')[0]
+def ejecutar_algoritmos_y_mostrar(laberinto, inicio, meta, caso):
+    print(f"\n{caso}:")
     resultados = ejecutar_algoritmos(laberinto, inicio, meta)
     for nombre, (camino, explorados, tiempo) in resultados.items():
         print(f"{nombre}: Nodos explorados: {explorados}, Tiempo: {tiempo:.4f}s")
+
+if __name__ == "__main__":
+    laberinto = cargar_laberinto("Laberinto1.txt")
+    
+    inicio_base = encontrar_posiciones(laberinto, '2')[0]
+    meta_base = encontrar_posiciones(laberinto, '3')[0]
+    ejecutar_algoritmos_y_mostrar(laberinto, inicio_base, meta_base, "Caso Base")
+    
+    inicio_aleatorio = elegir_punto_aleatorio(laberinto)
+    meta_aleatorio = elegir_punto_aleatorio(laberinto)
+    if inicio_aleatorio and meta_aleatorio:
+        ejecutar_algoritmos_y_mostrar(laberinto, inicio_aleatorio, meta_aleatorio, "Caso Aleatorio")
+    else:
+        print("No se encontraron puntos de inicio y meta válidos en el laberinto para el caso aleatorio.")
