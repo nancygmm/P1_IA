@@ -36,14 +36,15 @@ def ejecutar_seleccion():
     
     if opciones[seleccion] == "Caso Base":
         inicio = encontrar_posiciones(laberinto, '2')[0]
-        meta = encontrar_posiciones(laberinto, '3')[0]
+        meta = encontrar_posiciones(laberinto, '3')[0]  
     else:
         inicio = elegir_punto_aleatorio(laberinto)
-        meta = elegir_punto_aleatorio(laberinto)
-    
+        meta = encontrar_posiciones(laberinto, '3')[0]  
+
     if not inicio or not meta:
         print("Error: No se encontraron puntos válidos en el laberinto.")
         return
+
     
     resultados = ejecutar_algoritmos(laberinto, inicio, meta)
     
