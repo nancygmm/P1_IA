@@ -31,10 +31,10 @@ def bfs(laberinto, inicio, meta):
         visitados.add(actual)
         nodos_explorados += 1
         if actual == meta:
-            return camino, nodos_explorados
+            return camino, nodos_explorados, len(camino)
         for vecino in movimientos_validos(laberinto, actual):
             queue.put((vecino, camino + [vecino]))
-    return None, nodos_explorados
+    return None, nodos_explorados, 0
 
 def dfs(laberinto, inicio, meta):
     stack = LifoQueue()
@@ -49,10 +49,10 @@ def dfs(laberinto, inicio, meta):
         visitados.add(actual)
         nodos_explorados += 1
         if actual == meta:
-            return camino, nodos_explorados
+            return camino, nodos_explorados, len(camino)
         for vecino in movimientos_validos(laberinto, actual):
             stack.put((vecino, camino + [vecino]))
-    return None, nodos_explorados
+    return None, nodos_explorados, 0
 
 def greedy(laberinto, inicio, meta, heuristica):
     pq = []
@@ -67,10 +67,10 @@ def greedy(laberinto, inicio, meta, heuristica):
         visitados.add(actual)
         nodos_explorados += 1
         if actual == meta:
-            return camino, nodos_explorados
+            return camino, nodos_explorados, len(camino)
         for vecino in movimientos_validos(laberinto, actual):
             heapq.heappush(pq, (heuristica(vecino, meta), vecino, camino + [vecino]))
-    return None, nodos_explorados
+    return None, nodos_explorados, 0
 
 def a_star(laberinto, inicio, meta, heuristica):
     pq = []
@@ -85,11 +85,11 @@ def a_star(laberinto, inicio, meta, heuristica):
         visitados[actual] = True
         nodos_explorados += 1
         if actual == meta:
-            return camino, nodos_explorados
+            return camino, nodos_explorados, len(camino)
         for vecino in movimientos_validos(laberinto, actual):
             costo = len(camino) + heuristica(vecino, meta)
             heapq.heappush(pq, (costo, vecino, camino + [vecino]))
-    return None, nodos_explorados
+    return None, nodos_explorados, 0
 
 def heuristica_manhattan(a, b):
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
@@ -105,26 +105,26 @@ def ejecutar_algoritmos(laberinto, inicio, meta):
     resultados = {}
     for nombre, funcion in [('BFS', bfs), ('DFS', dfs)]:
         inicio_tiempo = time.time()
-        camino, explorados = funcion(laberinto, inicio, meta)
+        camino, explorados, largo_camino = funcion(laberinto, inicio, meta)
         tiempo = time.time() - inicio_tiempo
-        resultados[nombre] = (camino, explorados, tiempo)
+        resultados[nombre] = (camino, explorados, tiempo, largo_camino)
     for nombre, heuristica in [('A*_Manhattan', heuristica_manhattan), ('A*_Euclidiana', heuristica_euclidiana)]:
         inicio_tiempo = time.time()
-        camino, explorados = a_star(laberinto, inicio, meta, heuristica)
+        camino, explorados, largo_camino = a_star(laberinto, inicio, meta, heuristica)
         tiempo = time.time() - inicio_tiempo
-        resultados[nombre] = (camino, explorados, tiempo)
+        resultados[nombre] = (camino, explorados, tiempo, largo_camino)
     for nombre, heuristica in [('Greedy_Manhattan', heuristica_manhattan), ('Greedy_Euclidiana', heuristica_euclidiana)]:
         inicio_tiempo = time.time()
-        camino, explorados = greedy(laberinto, inicio, meta, heuristica)
+        camino, explorados, largo_camino = greedy(laberinto, inicio, meta, heuristica)
         tiempo = time.time() - inicio_tiempo
-        resultados[nombre] = (camino, explorados, tiempo)
+        resultados[nombre] = (camino, explorados, tiempo, largo_camino)
     return resultados
 
 def ejecutar_algoritmos_y_mostrar(laberinto, inicio, meta, caso):
     print(f"\n{caso}:")
     resultados = ejecutar_algoritmos(laberinto, inicio, meta)
-    for nombre, (camino, explorados, tiempo) in resultados.items():
-        print(f"{nombre}: Nodos explorados: {explorados}, Tiempo: {tiempo:.4f}s")
+    for nombre, (camino, explorados, tiempo, largo_camino) in resultados.items():
+        print(f"{nombre}: Nodos explorados: {explorados}, Tiempo: {tiempo:.4f}s, Largo del camino: {largo_camino}")
 
 if __name__ == "__main__":
     laberinto = cargar_laberinto("Laberinto1.txt")

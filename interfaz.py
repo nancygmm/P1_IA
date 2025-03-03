@@ -49,8 +49,8 @@ def ejecutar_seleccion():
     resultados = ejecutar_algoritmos(laberinto, inicio, meta)
     
     print(f"\n{opciones[seleccion]}:")
-    for nombre, (camino, explorados, tiempo) in resultados.items():
-        print(f"{nombre}: Nodos explorados: {explorados}, Tiempo: {tiempo:.4f}s")
+    for nombre, (camino, explorados, tiempo, largo_camino) in resultados.items():
+        print(f"{nombre}: Nodos explorados: {explorados}, Tiempo: {tiempo:.4f}s, Largo del camino: {largo_camino}")
     
     print("\n¿Desea visualizar un recorrido en particular?")
     algoritmos = list(resultados.keys())
@@ -69,7 +69,7 @@ def ejecutar_seleccion():
         return
     
     algoritmo = algoritmos[seleccion_alg]
-    camino, explorados, tiempo = resultados[algoritmo]
+    camino, explorados, tiempo, largo_camino = resultados[algoritmo]
     if camino:
         dibujar_recorrido(laberinto, camino, f"Recorrido - {algoritmo}")
     else:
