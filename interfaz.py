@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from main import cargar_laberinto, ejecutar_algoritmos, encontrar_posiciones
+from main import cargar_laberinto, ejecutar_algoritmos, encontrar_posiciones, elegir_punto_aleatorio
 
 def dibujar_recorrido(laberinto, camino, titulo):
     plt.figure(figsize=(8, 8))
@@ -16,43 +16,63 @@ def dibujar_recorrido(laberinto, camino, titulo):
     plt.show(block=True)
 
 def ejecutar_seleccion():
-    algoritmos = ["BFS", "DFS", "A*_Manhattan", "A*_Euclidiana", "Greedy_Manhattan", "Greedy_Euclidiana"]
-    print("Seleccione un algoritmo:")
-    for i, alg in enumerate(algoritmos):
-        print(f"{i+1}. {alg}")
+    opciones = ["Caso Base", "Caso Aleatorio"]
+    print("Seleccione una opción:")
+    for i, opcion in enumerate(opciones):
+        print(f"{i+1}. {opcion}")
     
-    seleccion = input("Ingrese el número del algoritmo: ")
+    seleccion = input("Ingrese el número de la opción: ")
     
     try:
         seleccion = int(seleccion) - 1
-        if seleccion < 0 or seleccion >= len(algoritmos):
+        if seleccion < 0 or seleccion >= len(opciones):
             print("Selección no válida.")
             return
     except ValueError:
         print("Entrada no válida. Ingrese un número.")
         return
     
-    algoritmo = algoritmos[seleccion]
     laberinto = cargar_laberinto("Laberinto1.txt")
-    inicio = encontrar_posiciones(laberinto, '2')
-    meta = encontrar_posiciones(laberinto, '3')
+    
+    if opciones[seleccion] == "Caso Base":
+        inicio = encontrar_posiciones(laberinto, '2')[0]
+        meta = encontrar_posiciones(laberinto, '3')[0]
+    else:
+        inicio = elegir_punto_aleatorio(laberinto)
+        meta = elegir_punto_aleatorio(laberinto)
     
     if not inicio or not meta:
-        print("Error: No se encontraron los puntos de inicio o meta en el laberinto.")
+        print("Error: No se encontraron puntos válidos en el laberinto.")
         return
     
-    inicio, meta = inicio[0], meta[0]
     resultados = ejecutar_algoritmos(laberinto, inicio, meta)
     
-    if algoritmo in resultados:
-        camino, explorados, tiempo = resultados[algoritmo]
-        print(f"{algoritmo}:\nNodos explorados: {explorados}\nTiempo: {tiempo:.4f}s")
-        if camino:
-            dibujar_recorrido(laberinto, camino, f"Recorrido - {algoritmo}")
-        else:
-            print(f"{algoritmo} no encontró una solución.")
+    print(f"\n{opciones[seleccion]}:")
+    for nombre, (camino, explorados, tiempo) in resultados.items():
+        print(f"{nombre}: Nodos explorados: {explorados}, Tiempo: {tiempo:.4f}s")
+    
+    print("\n¿Desea visualizar un recorrido en particular?")
+    algoritmos = list(resultados.keys())
+    for i, alg in enumerate(algoritmos):
+        print(f"{i+1}. {alg}")
+    
+    seleccion_alg = input("Ingrese el número del algoritmo: ")
+    
+    try:
+        seleccion_alg = int(seleccion_alg) - 1
+        if seleccion_alg < 0 or seleccion_alg >= len(algoritmos):
+            print("Selección no válida.")
+            return
+    except ValueError:
+        print("Entrada no válida. Ingrese un número.")
+        return
+    
+    algoritmo = algoritmos[seleccion_alg]
+    camino, explorados, tiempo = resultados[algoritmo]
+    if camino:
+        dibujar_recorrido(laberinto, camino, f"Recorrido - {algoritmo}")
     else:
-        print("Error: Algoritmo no válido.")
+        print(f"{algoritmo} no encontró una solución.")
 
 if __name__ == "__main__":
     ejecutar_seleccion()
