@@ -109,3 +109,52 @@ class Interfaz:
 
         pygame.quit()
         sys.exit()
+import pygame
+import time
+from main import cargar_laberinto, ejecutar_algoritmos, encontrar_posiciones
+
+BLANCO = (255, 255, 255)
+NEGRO = (0, 0, 0)
+AZUL = (0, 0, 255)
+ROJO = (255, 0, 0)
+VERDE = (0, 255, 0)
+
+TAM_CELDA = 5
+
+def dibujar_laberinto(screen, laberinto, camino_actual=None):
+    screen.fill(BLANCO)
+    filas, columnas = laberinto.shape
+    for x in range(filas):
+        for y in range(columnas):
+            color = BLANCO
+            if laberinto[x, y] == '1':
+                color = NEGRO
+            elif laberinto[x, y] == '2':
+                color = VERDE
+            elif laberinto[x, y] == '3':
+                color = ROJO
+            pygame.draw.rect(screen, color, (y * TAM_CELDA, x * TAM_CELDA, TAM_CELDA, TAM_CELDA))
+    if camino_actual:
+        for x, y in camino_actual:
+            pygame.draw.rect(screen, AZUL, (y * TAM_CELDA, x * TAM_CELDA, TAM_CELDA, TAM_CELDA))
+    pygame.display.flip()
+
+def visualizar_algoritmo(laberinto, algoritmo, inicio, meta):
+    pygame.init()
+    filas, columnas = laberinto.shape
+    screen = pygame.display.set_mode((columnas * TAM_CELDA, filas * TAM_CELDA))
+    pygame.display.set_caption(f"Visualización - {algoritmo}")
+    camino, _, _ = resultados[algoritmo]
+    for i in range(len(camino)):
+        dibujar_laberinto(screen, laberinto, camino[:i+1])
+        time.sleep(0.01)
+    pygame.time.delay(2000)
+    pygame.quit()
+
+if __name__ == "__main__":
+    laberinto = cargar_laberinto("laberinto.txt")
+    inicio = encontrar_posiciones(laberinto, '2')[0]
+    meta = encontrar_posiciones(laberinto, '3')[0]
+    resultados = ejecutar_algoritmos(laberinto, inicio, meta)
+    for algoritmo in resultados:
+        visualizar_algoritmo(laberinto, algoritmo, inicio, meta)
