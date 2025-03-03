@@ -6,7 +6,7 @@ import numpy as np
 
 def cargar_laberinto(archivo):
     with open(archivo, 'r') as f:
-        laberinto = [list(line.strip()) for line in f.readlines()]
+        laberinto = [list(line.strip().replace(',', '')) for line in f.readlines()]
     return np.array(laberinto)
 
 def encontrar_posiciones(laberinto, valor):
