@@ -127,7 +127,7 @@ def ejecutar_algoritmos_y_mostrar(laberinto, inicio, meta, caso):
         print(f"{nombre}: Nodos explorados: {explorados}, Tiempo: {tiempo:.4f}s, Largo del camino: {largo_camino}")
 
 if __name__ == "__main__":
-    laberinto = cargar_laberinto("Laberinto2.txt")
+    laberinto = cargar_laberinto("Laberinto3.txt")
     
     inicio_base = encontrar_posiciones(laberinto, '2')[0]
     meta_base = encontrar_posiciones(laberinto, '3')[0]

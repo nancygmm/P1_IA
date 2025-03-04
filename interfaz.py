@@ -32,7 +32,7 @@ def ejecutar_seleccion():
         print("Entrada no válida. Ingrese un número.")
         return
     
-    laberinto = cargar_laberinto("Laberinto2.txt")
+    laberinto = cargar_laberinto("Laberinto3.txt")
     
     if opciones[seleccion] == "Caso Base":
         inicio = encontrar_posiciones(laberinto, '2')[0]
